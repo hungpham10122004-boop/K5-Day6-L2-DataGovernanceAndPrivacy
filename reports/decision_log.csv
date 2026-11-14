@@ -1,0 +1,5 @@
+ts,scope,status,canonical,reason_code,reason,owner,evidence
+2026-11-14T14:42:54+00:00,t09,HOLD,HOLD,CASES_ON_HOLD,9 case(s) HOLD: DPO/legal must resolve before release,Học viên (làm cá nhân) - sửa tên bạn vào đây,decisions.csv;review_queue.csv;audit_log.jsonl
+2026-11-14T15:04:36+00:00,t09,HOLD,HOLD,CASES_ON_HOLD,9 case(s) HOLD: DPO/legal must resolve before release,Học viên (làm cá nhân) - sửa tên bạn vào đây,decisions.csv;review_queue.csv;audit_log.jsonl
+2026-11-14T15:06:10+00:00,t09,HOLD,HOLD,CASES_ON_HOLD,9 case(s) HOLD: DPO/legal must resolve before release,Học viên (làm cá nhân) - sửa tên bạn vào đây,decisions.csv;review_queue.csv;audit_log.jsonl
+2026-11-14T15:07:55+00:00,t09,HOLD,HOLD,CASES_ON_HOLD,8 case(s) HOLD: DPO/legal must resolve before release,Học viên (làm cá nhân) - sửa tên bạn vào đây,decisions.csv;review_queue.csv;audit_log.jsonl

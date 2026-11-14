@@ -1,0 +1,13 @@
+rank,item_id,score,reason,suggested_action,slice,evidence_path,reviewer,reviewer_decision,override_value,review_note,reviewed_at
+1,CASE-12,2.4,RETENTION_EXCESSIVE;RAW_PII_IN_CLOUD;NO_ENCRYPTION;NO_LAWFUL_BASIS,HOLD,VN,cases/CASE-12.json,Pham Van Hung,approve,,Dong y HOLD: nhieu vi pham nghiem trong,2026-11-14
+2,CASE-03,2.3,RETENTION_UNBOUNDED;RAW_PII_IN_CLOUD;CONSENT_INVALID,HOLD,VN,cases/CASE-03.json,,,,,
+3,CASE-08,2.2,AMBIGUOUS_NEEDS_LEGAL;NO_LAWFUL_BASIS,HOLD,EU,cases/CASE-08.json,,,,,
+4,CASE-09,2.15,AMBIGUOUS_NEEDS_LEGAL,HOLD,IN,cases/CASE-09.json,Pham Van Hung,edit,REWORK,DPDP chua hieu luc den 13/05/2027 nen chua phai vi pham hien tai; yeu cau bo sung ban ghi consent va xac minh du lieu tre em truoc ngay do,2026-11-14
+5,CASE-01,2.1,NO_LAWFUL_BASIS,HOLD,VN,cases/CASE-01.json,,,,,
+6,CASE-02,2.1,XBORDER_NO_MECHANISM,HOLD,EU,cases/CASE-02.json,,,,,
+7,CASE-04,2.1,DPIA_MISSING,HOLD,EU,cases/CASE-04.json,,,,,
+8,CASE-07,2.1,XBORDER_NO_IMPACT_ASSESSMENT,HOLD,VN,cases/CASE-07.json,,,,,
+9,CASE-11,2.1,AMBIGUOUS_NEEDS_LEGAL,HOLD,US-CA,cases/CASE-11.json,Pham Van Hung,escalate,,Chua ro cong ty co thuoc nguong CCPA; co precise_location la du lieu nhay cam; chuyen legal xac nhan,2026-11-14
+10,CASE-05,1.1,NOTICE_MISSING,REWORK,US-CA,cases/CASE-05.json,Pham Van Hung,approve,,Dong y REWORK: bo sung notice at collection,2026-11-14
+11,CASE-06,0.0,no_rule_fired,GO,SG,cases/CASE-06.json,Pham Van Hung,approve,,GO tam thoi vi chua co rule PDPA cho SG; can legal xac nhan,2026-11-14
+12,CASE-10,0.0,no_rule_fired,GO,EU,cases/CASE-10.json,,,,,
