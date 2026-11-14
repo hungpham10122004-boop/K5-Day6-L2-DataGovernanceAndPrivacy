@@ -1,0 +1,13 @@
+case_id,decision,reason_codes,market,rule_ids,sources,advisory,needs_legal_review,final_source
+CASE-01,HOLD,NO_LAWFUL_BASIS,VN,R-VN-01,"R-VN-01: Luat BVDLCN 91/2025/QH15 Dieu 9, Dieu 19 (can doi chieu)",,True,policy
+CASE-02,HOLD,XBORDER_NO_MECHANISM,EU,R-EU-XB-01,"R-EU-XB-01: GDPR (EUR-Lex) Chapter V, Art. 44-49",,True,policy
+CASE-03,HOLD,RETENTION_UNBOUNDED;RAW_PII_IN_CLOUD;CONSENT_INVALID,VN,R-GEN-RET-01;R-GEN-PII-01;R-VN-04,"R-GEN-RET-01: GDPR (EUR-Lex) Art. 5(1)(e) storage limitation | R-GEN-PII-01: GDPR (EUR-Lex) Art. 5(1)(c) data minimisation, Art. 25 | R-VN-04: Luat 91/2025/QH15 Dieu 9, Dieu 10 (can doi chieu)",,True,policy
+CASE-04,HOLD,DPIA_MISSING,EU,R-EU-DPIA-01,R-EU-DPIA-01: GDPR (EUR-Lex) Art. 35 DPIA; EDPB Guidelines 01/2020 connected vehicles,,True,policy
+CASE-05,REWORK,NOTICE_MISSING,US-CA,R-GEN-NTC-01,R-GEN-NTC-01: GDPR (EUR-Lex) Art. 13-14; CCPA/CPRA notice at collection,,True,policy
+CASE-06,GO,,SG,,,,False,policy
+CASE-07,HOLD,XBORDER_NO_IMPACT_ASSESSMENT,VN,R-VN-02,R-VN-02: Luat 91/2025/QH15 + ND 356/2025/ND-CP Dieu 21 (can doi chieu),,True,policy
+CASE-08,HOLD,AMBIGUOUS_NEEDS_LEGAL;NO_LAWFUL_BASIS,EU,R-GEN-AMB-01;R-EU-LB-01,R-GEN-AMB-01: Lab protocol docs/tracks/T09.md muc 4: ambiguity -> HOLD | R-EU-LB-01: GDPR (EUR-Lex) Art. 6(1),,True,policy
+CASE-09,HOLD,AMBIGUOUS_NEEDS_LEGAL,IN,R-GEN-AMB-01,R-GEN-AMB-01: Lab protocol docs/tracks/T09.md muc 4: ambiguity -> HOLD,"R-IN-01:CONSENT_RECORD_MISSING (effective 2027-05-13, not yet in force) | R-IN-02:MINORS (effective 2027-05-13, not yet in force)",True,policy
+CASE-10,GO,,EU,,,,False,policy
+CASE-11,HOLD,AMBIGUOUS_NEEDS_LEGAL,US-CA,R-GEN-AMB-01,R-GEN-AMB-01: Lab protocol docs/tracks/T09.md muc 4: ambiguity -> HOLD,,True,policy
+CASE-12,HOLD,RETENTION_EXCESSIVE;RAW_PII_IN_CLOUD;NO_ENCRYPTION;NO_LAWFUL_BASIS,VN,R-GEN-RET-02;R-GEN-PII-01;R-GEN-ENC-01;R-VN-01,"R-GEN-RET-02: GDPR (EUR-Lex) Art. 5(1)(e); internal threshold | R-GEN-PII-01: GDPR (EUR-Lex) Art. 5(1)(c) data minimisation, Art. 25 | R-GEN-ENC-01: GDPR (EUR-Lex) Art. 32 security of processing | R-VN-01: Luat BVDLCN 91/2025/QH15 Dieu 9, Dieu 19 (can doi chieu)",,True,policy
