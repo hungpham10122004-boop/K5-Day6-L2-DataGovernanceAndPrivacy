@@ -1,0 +1,164 @@
+# Privacy policy rules v1 — HOC TAP, khong phai tu van phap ly. Moi rule deu can DPO/legal xac nhan.
+# DSL: when = {all: [...]} hoac {any: [...]}; dieu kien = {field: "a.b", op: eq|ne|in|not_in|is_null|not_null|truthy|falsy|gt|contains, value: ...}
+# Uu tien khi nhieu rule cung bat: HOLD > REWORK > GO. effective_date > ngay danh gia (as_of_date) => chi la advisory.
+policy_version: v1-2026-11-14
+as_of_date: 2026-11-14
+reason_codes: [XBORDER_NO_MECHANISM, RETENTION_UNBOUNDED, RETENTION_EXCESSIVE, RAW_PII_IN_CLOUD, DPIA_MISSING,
+               NOTICE_MISSING, NO_LAWFUL_BASIS, CONSENT_RECORD_MISSING, MINORS, NO_ENCRYPTION, AMBIGUOUS_NEEDS_LEGAL,
+               CONSENT_INVALID, XBORDER_NO_IMPACT_ASSESSMENT]
+defaults:
+  max_retention_days: 365          # nguong noi bo (internal policy), khong phai luat; chot truoc khi eval
+rules:
+  - id: R-GEN-AMB-01
+    markets: ['*']
+    when: {all: [{field: ambiguity_notes, op: truthy}]}
+    decision: HOLD
+    reason_code: AMBIGUOUS_NEEDS_LEGAL
+    note: 'Case co ghi chu mo ho -> HOLD va chuyen DPO/legal (giao thuc cua lab).'
+    source: {doc: 'Lab protocol', ref: 'docs/tracks/T09.md muc 4: ambiguity -> HOLD'}
+    confidence: high
+    needs_legal_review: true
+  - id: R-GEN-NTC-01
+    markets: ['*']
+    when: {all: [{field: notice_given, op: falsy}]}
+    decision: REWORK
+    reason_code: NOTICE_MISSING
+    source: {doc: 'GDPR (EUR-Lex)', ref: 'Art. 13-14; CCPA/CPRA notice at collection', url: 'https://eur-lex.europa.eu/eli/reg/2016/679/oj'}
+    confidence: medium
+    needs_legal_review: true
+  - id: R-GEN-RET-01
+    markets: ['*']
+    when: {all: [{field: retention_days, op: is_null}]}
+    decision: REWORK
+    reason_code: RETENTION_UNBOUNDED
+    source: {doc: 'GDPR (EUR-Lex)', ref: 'Art. 5(1)(e) storage limitation', url: 'https://eur-lex.europa.eu/eli/reg/2016/679/oj'}
+    confidence: medium
+    needs_legal_review: true
+  - id: R-GEN-RET-02
+    markets: ['*']
+    when: {all: [{field: retention_days, op: gt, value: '$max_retention_days'}]}
+    decision: REWORK
+    reason_code: RETENTION_EXCESSIVE
+    note: 'Nguong 365 ngay la chinh sach noi bo gia dinh, khong phai quy dinh luat.'
+    source: {doc: 'GDPR (EUR-Lex)', ref: 'Art. 5(1)(e); internal threshold', url: 'https://eur-lex.europa.eu/eli/reg/2016/679/oj'}
+    confidence: low
+    needs_legal_review: true
+  - id: R-GEN-PII-01
+    markets: ['*']
+    when: {all: [{field: storage.location, op: eq, value: cloud}, {field: storage.raw_retained, op: truthy}]}
+    decision: HOLD
+    reason_code: RAW_PII_IN_CLOUD
+    source: {doc: 'GDPR (EUR-Lex)', ref: 'Art. 5(1)(c) data minimisation, Art. 25', url: 'https://eur-lex.europa.eu/eli/reg/2016/679/oj'}
+    confidence: medium
+    needs_legal_review: true
+  - id: R-GEN-ENC-01
+    markets: ['*']
+    when: {all: [{field: storage.location, op: eq, value: cloud}, {field: storage.encryption_at_rest, op: falsy}]}
+    decision: HOLD
+    reason_code: NO_ENCRYPTION
+    source: {doc: 'GDPR (EUR-Lex)', ref: 'Art. 32 security of processing', url: 'https://eur-lex.europa.eu/eli/reg/2016/679/oj'}
+    confidence: medium
+    needs_legal_review: true
+  - id: R-GEN-MIN-01
+    markets: [EU, VN, US-CA, SG]
+    when: {all: [{field: minors_possible, op: truthy}]}
+    decision: HOLD
+    reason_code: MINORS
+    source: {doc: 'GDPR (EUR-Lex)', ref: 'Art. 8 (children); CCPA minors opt-in', url: 'https://eur-lex.europa.eu/eli/reg/2016/679/oj'}
+    confidence: low
+    needs_legal_review: true
+  - id: R-GEN-CON-01
+    markets: [EU, VN, SG]
+    when: {all: [{field: lawful_basis, op: eq, value: consent}, {field: consent.record_available, op: falsy}]}
+    decision: REWORK
+    reason_code: CONSENT_RECORD_MISSING
+    source: {doc: 'GDPR (EUR-Lex)', ref: 'Art. 7(1) demonstrate consent', url: 'https://eur-lex.europa.eu/eli/reg/2016/679/oj'}
+    confidence: medium
+    needs_legal_review: true
+  # ---- EU ----
+  - id: R-EU-LB-01
+    markets: [EU]
+    when: {all: [{field: lawful_basis, op: not_in, value: [consent, contract, legal_obligation, vital_interest, public_task, legitimate_interest]}]}
+    decision: HOLD
+    reason_code: NO_LAWFUL_BASIS
+    source: {doc: 'GDPR (EUR-Lex)', ref: 'Art. 6(1)', url: 'https://eur-lex.europa.eu/eli/reg/2016/679/oj'}
+    confidence: medium
+    needs_legal_review: true
+  - id: R-EU-XB-01
+    markets: [EU]
+    when: {all: [{field: transfer.cross_border, op: truthy}, {field: transfer.mechanism, op: in, value: [null, unknown, none]}]}
+    decision: HOLD
+    reason_code: XBORDER_NO_MECHANISM
+    source: {doc: 'GDPR (EUR-Lex)', ref: 'Chapter V, Art. 44-49', url: 'https://eur-lex.europa.eu/eli/reg/2016/679/oj'}
+    confidence: medium
+    needs_legal_review: true
+  - id: R-EU-DPIA-01
+    markets: [EU]
+    when: {all: [{field: dpia_done, op: falsy}]}
+    decision: HOLD
+    reason_code: DPIA_MISSING
+    source: {doc: 'GDPR (EUR-Lex)', ref: 'Art. 35 DPIA; EDPB Guidelines 01/2020 connected vehicles', url: 'https://eur-lex.europa.eu/eli/reg/2016/679/oj'}
+    confidence: medium
+    needs_legal_review: true
+  # ---- VN (mau tu policy_example.yaml cua giang vien; so dieu can doi chieu van ban goc) ----
+  - id: R-VN-01
+    markets: [VN]
+    when: {all: [{field: lawful_basis, op: not_in, value: [consent, contract, legal_obligation, vital_interest, public_task]}]}
+    decision: HOLD
+    reason_code: NO_LAWFUL_BASIS
+    note: 'VN khong co co so legitimate interest.'
+    source: {doc: 'Luat BVDLCN 91/2025/QH15', ref: 'Dieu 9, Dieu 19 (can doi chieu)', url: 'https://thuvienphapluat.vn/van-ban/Bo-may-hanh-chinh/Luat-Bao-ve-du-lieu-ca-nhan-2025-so-91-2025-QH15-625628.aspx'}
+    confidence: medium
+    needs_legal_review: true
+  - id: R-VN-02
+    markets: [VN]
+    when: {all: [{field: transfer.cross_border, op: truthy}, {field: transfer.transfer_impact_assessment, op: falsy}]}
+    decision: HOLD
+    reason_code: XBORDER_NO_IMPACT_ASSESSMENT
+    source: {doc: 'Luat 91/2025/QH15 + ND 356/2025/ND-CP', ref: 'Dieu 21 (can doi chieu)', url: 'https://thuvienphapluat.vn/van-ban/Bo-may-hanh-chinh/Luat-Bao-ve-du-lieu-ca-nhan-2025-so-91-2025-QH15-625628.aspx'}
+    confidence: medium
+    needs_legal_review: true
+  - id: R-VN-03
+    markets: [VN]
+    when: {all: [{field: dpia_done, op: falsy}]}
+    decision: HOLD
+    reason_code: DPIA_MISSING
+    source: {doc: 'Luat 91/2025/QH15 + ND 356/2025/ND-CP', ref: 'Dieu 20, 22 (can doi chieu)', url: 'https://thuvienphapluat.vn/van-ban/Bo-may-hanh-chinh/Luat-Bao-ve-du-lieu-ca-nhan-2025-so-91-2025-QH15-625628.aspx'}
+    confidence: medium
+    needs_legal_review: true
+  - id: R-VN-04
+    markets: [VN]
+    when: {all: [{field: lawful_basis, op: eq, value: consent}, {any: [{field: consent.granular, op: falsy}, {field: consent.withdrawable, op: falsy}]}]}
+    decision: REWORK
+    reason_code: CONSENT_INVALID
+    source: {doc: 'Luat 91/2025/QH15', ref: 'Dieu 9, Dieu 10 (can doi chieu)', url: 'https://thuvienphapluat.vn/van-ban/Bo-may-hanh-chinh/Luat-Bao-ve-du-lieu-ca-nhan-2025-so-91-2025-QH15-625628.aspx'}
+    confidence: medium
+    needs_legal_review: true
+  # ---- EU consent validity (gop chung/khong rut lai duoc) ----
+  - id: R-EU-CON-02
+    markets: [EU]
+    when: {all: [{field: lawful_basis, op: eq, value: consent}, {any: [{field: consent.granular, op: falsy}, {field: consent.withdrawable, op: falsy}]}]}
+    decision: REWORK
+    reason_code: CONSENT_INVALID
+    source: {doc: 'GDPR (EUR-Lex)', ref: 'Art. 7(2),(3), Recital 32', url: 'https://eur-lex.europa.eu/eli/reg/2016/679/oj'}
+    confidence: medium
+    needs_legal_review: true
+  # ---- IN: luat chua hieu luc (DPDP core obligations tu 2027-05-13) => chi advisory ----
+  - id: R-IN-01
+    markets: [IN]
+    effective_date: 2027-05-13
+    when: {all: [{field: lawful_basis, op: eq, value: consent}, {field: consent.record_available, op: falsy}]}
+    decision: REWORK
+    reason_code: CONSENT_RECORD_MISSING
+    source: {doc: 'DPDP Act 2023 + DPDP Rules 2025', ref: 'core obligations from 13/05/2027'}
+    confidence: low
+    needs_legal_review: true
+  - id: R-IN-02
+    markets: [IN]
+    effective_date: 2027-05-13
+    when: {all: [{field: minors_possible, op: truthy}]}
+    decision: HOLD
+    reason_code: MINORS
+    source: {doc: 'DPDP Act 2023 + DPDP Rules 2025', ref: 'children data, from 13/05/2027'}
+    confidence: low
+    needs_legal_review: true

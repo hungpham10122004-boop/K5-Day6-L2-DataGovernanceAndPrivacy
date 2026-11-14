@@ -2,15 +2,19 @@
 # Group config — EDIT ME (one per group). Values here override
 # the track defaults loaded from `track_config`.
 # ============================================================
-group_id: G00                     # e.g. G07
-owner: "TODO: tên người ký duyệt (role)"   # mandatory for every Decision
-track_config: tracks/t02.yaml     # pick your challenge: tracks/t01.yaml ... tracks/t14.yaml
-track: t02                        # must match track_config
-input: fixtures/t02_raw_qc        # or data/real/... if your instructor provided a real pack
+group_id: SOLO                     # e.g. G07
+owner: "Học viên (làm cá nhân) - sửa tên bạn vào đây"   # mandatory for every Decision
+track_config: tracks/t09.yaml     # pick your challenge: tracks/t01.yaml ... tracks/t14.yaml
+track: t09                        # must match track_config
+input: fixtures/t09_privacy_gate        # or data/real/... if your instructor provided a real pack
 output: out/
 seed: 42
 offline: true                     # demo/eval must not touch the network
 strict_provenance: true           # fail if manifest.csv hashes do not match
 
 # Track params (merged over track_config.params). Freeze before evaluation.
-params: {}
+params:
+  policy_file: configs/policy/privacy_policy_v1.yaml
+  as_of_date: "2026-11-14"   # ngay danh gia co dinh de tai lap (rule co effective_date sau ngay nay chi la advisory)
+  max_retention_days: 365
+  budget: 12
